@@ -1,7 +1,9 @@
 ﻿using Backend.Core.Application.Services;
 using Backend.Core.Domain.Models;
 using Backend.Presentation.DataTransferObjects.Products;
+using Backend.Presentation.ServerWebApplication.Models;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace Backend.Presentation.ServerWebApplication.Controllers
 {
@@ -9,161 +11,152 @@ namespace Backend.Presentation.ServerWebApplication.Controllers
     [Route("api/[controller]")]
     public class ProductController : Controller
     {
-        private IProductRepository _productRepository;
-        private ICategoryRepository _categoryRepository;
-        public ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository)
+        #region Private Members
+
+        private IApplicationDbContext _context;
+
+        #endregion
+        #region Conctructor
+        public ProductController(IApplicationDbContext context)
         {
-            _productRepository = productRepository;
-            _categoryRepository = categoryRepository;
+            _context = context;
         }
 
-        [HttpGet("GetProduct")]
-        public async Task<ActionResult> Get(int id)
+        #endregion
+
+        #region Public Context Methods
+
+        [HttpPost]
+        public async Task<ApiResponse<Product?>> Add([FromBody] ProductPostDto productPostDto)
         {
-            Product? product = await _productRepository.GetByIdAsync(id);
-            if (product == null)
+            var apiResponse = new ApiResponse<Product?>();
+            try
             {
-                return NotFound();
-            }
-            ProductGetDto productGetDto = new ProductGetDto()
-            {
-                Id = product.Id,
-                Name = product.Name,
-                CategoryId = product.CategoryId,
-                CategoryName = product.Category.Name
-            };
-            return Json(productGetDto);
-        }
-
-
-        [HttpGet("GetAllProducts")]
-        public async Task<ActionResult> GetAll()
-        {
-            IEnumerable<Product> productList = await _productRepository.GetAllAsync();
-            if (productList.Count() < 1)
-            {
-                return NotFound("Товары отсутствуют");
-            }
-
-            List<ProductGetDto> productDtoList = new();
-
-            foreach (var product in productList)
-            {
-                productDtoList.Add(new ProductGetDto()
+                var success = await _context.Products.AddAsync(new Product
                 {
-                    Id = product.Id,
-                    Name = product.Name,
-                    CategoryId = product.CategoryId,
-                    CategoryName = product.Category.Name
+                    Name = productPostDto.Name
                 });
+                apiResponse.Success = success;
+                if (success)
+                {
+                    var latestProduct = await _context.Products.GetLatest();
+
+                    apiResponse.Result = latestProduct;
+                }
+            }
+            catch (NpgsqlException ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
+
             }
 
-            return Json(productDtoList);
+            return apiResponse;
         }
-
-        [HttpPost("AddProduct")]
-        public async Task<ActionResult<ProductPostDto>> Post([FromBody] ProductPostDto productDto)
+        [HttpGet]
+        public async Task<ApiResponse<List<Product>>> GetAll()
         {
-            if (string.IsNullOrEmpty(productDto.Name))
+            var apiResponse = new ApiResponse<List<Product>>();
+
+            try
             {
-                ModelState.AddModelError("Name", "Недопустимо пустое название товара");
+                var productList = await _context.Products.GetAllAsync();
+                apiResponse.Success = true;
+
+                apiResponse.Result = productList.ToList();
+            }
+            catch (NpgsqlException ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
             }
 
-            if (productDto.Name?.Length > 300)
-            {
-                ModelState.AddModelError("Name", "Превышено количество допустимых символов в названии товара");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Product? product = new Product()
-            {
-                Name = productDto.Name,
-                CategoryId = productDto.CategoryId,
-            };
-
-            await _productRepository.AddAsync(product);
-
-            //product = await _productRepository.GetLatestProduct();
-            //if (product == null)
-            //{
-            //    return BadRequest(new {Message = "Товар не был добавлен"});
-            //}
-
-            ProductGetDto productGetDto = new ProductGetDto() 
-            {
-                Id = product.Id,
-                Name = product.Name,
-                CategoryId = product.CategoryId,
-                CategoryName = product.Category.Name
-            };
-            return Ok(productGetDto);
+            return apiResponse;
         }
-
-        [HttpDelete("DeleteProduct")]
-        public async Task<ActionResult> Delete(int id)
+        [HttpGet("{id}")]
+        public async Task<ApiResponse<Product?>> GetById(int id)
         {
-            Product? product = await _productRepository.GetByIdAsync(id);
 
-            if (product == null)
+            var apiResponse = new ApiResponse<Product?>();
+
+            try
             {
-                ModelState.AddModelError("Product", "Не существует товара с таким id");
-                return BadRequest(ModelState);
+                var Product = await _context.Products.GetByIdAsync(id);
+                apiResponse.Success = true;
+                apiResponse.Result = Product;
+            }
+            catch (NpgsqlException ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
             }
 
-            await _productRepository.DeleteAsync(id);
-
-            ProductGetDto productGetDto = new()
-            {
-                Id = product.Id,
-                Name = product.Name,
-                CategoryId = product.CategoryId,
-                CategoryName = product.Category.Name
-            };
-
-            return Ok(new { Message = "Товар успешно удалён", Product = productGetDto});
+            return apiResponse;
         }
-
-        [HttpPut("UpdateProduct")]
-        public async Task<ActionResult<ProductUpdateDto>> Update([FromBody]ProductUpdateDto productUpdateDto)
+        [HttpPatch]
+        public async Task<ApiResponse<Product?>> Update(Product Product)
         {
-            if (!ModelState.IsValid)
+            var apiResponse = new ApiResponse<Product?>();
+
+            try
             {
-                return BadRequest(ModelState);
+                var success = await _context.Products.UpdateAsync(Product);
+                apiResponse.Success = success;
+                apiResponse.Result = await _context.Products.GetByIdAsync(Product.Id);
+            }
+            catch (NpgsqlException ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
             }
 
-            if (await _productRepository.GetByIdAsync(productUpdateDto.Id) == null)
-            {
-                return BadRequest(new { Error = "Не существует товара с указанным id" });
-            }
-
-            Category? category = await _categoryRepository.GetByIdAsync(productUpdateDto.CategoryId);
-            if (category == null)
-            {
-                return BadRequest(new { Error = "Не существует категории с указанным id" });
-            }
-
-            Product product = new()
-            {
-                Id = productUpdateDto.Id,
-                Name = productUpdateDto.Name,
-                CategoryId = productUpdateDto.CategoryId,
-            };
-
-            await _productRepository.UpdateAsync(product);
-
-            ProductGetDto productGetDto = new()
-            {
-                Id = product.Id,
-                Name = product.Name,
-                CategoryId = product.CategoryId,
-                CategoryName = category.Name
-            };
-
-            return Ok(new { Message = "Товар успешно обновлён", Product = productGetDto});
+            return apiResponse;
         }
+        [HttpDelete]
+        public async Task<ApiResponse<bool>> Delete(int id)
+        {
+            var apiResponse = new ApiResponse<bool>();
+
+            try
+            {
+                var success = await _context.Products.DeleteAsync(id);
+                apiResponse.Success = success;
+                apiResponse.Result = success;
+            }
+            catch (NpgsqlException ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
+            }
+
+            return apiResponse;
+        }
+        #endregion
+
     }
 }

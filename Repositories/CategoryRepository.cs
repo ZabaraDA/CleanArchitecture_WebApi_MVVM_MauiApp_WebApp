@@ -28,7 +28,12 @@ namespace Backend.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            using (IDbConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                const string sqlCommand = "DELETE FROM category WHERE id = @id";
+                var result = await connection.ExecuteAsync(sqlCommand, new { id });
+                return Convert.ToBoolean(result);
+            }
         }
 
         public async Task<IReadOnlyList<Category>> GetAllAsync()
@@ -41,12 +46,17 @@ namespace Backend.Infrastructure.Repositories
             }
         }
 
-        public Task<IReadOnlyCollection<Product>> GetAllProductsAsync(int categoryId)
+        public async Task<IReadOnlyList<Product>> GetAllProductsAsync(int categoryId)
         {
-            throw new NotImplementedException();
+            using (IDbConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                const string sqlCommand = "SELECT * FROM product WHERE categoryid = @categoryId ";
+                var result = await connection.QueryAsync<Product>(sqlCommand, new { categoryId });
+                return result.ToList();
+            }
         }
 
-        public async Task<Category> GetByIdAsync(int id)
+        public async Task<Category?> GetByIdAsync(int id)
         {
             using (IDbConnection connection = new NpgsqlConnection(_connectionString))
             {
@@ -55,7 +65,7 @@ namespace Backend.Infrastructure.Repositories
             }
         }
 
-        public async Task<Category> GetLatest()
+        public async Task<Category?> GetLatest()
         {
             using (IDbConnection connection = new NpgsqlConnection(_connectionString))
             {
@@ -65,9 +75,18 @@ namespace Backend.Infrastructure.Repositories
             }
         }
 
-        public Task<bool> UpdateAsync(Category category)
+        public async Task<bool> UpdateAsync(Category category)
         {
-            throw new NotImplementedException();
+            using (IDbConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                const string sqlCommand = "UPDATE category SET name = @name WHERE id = @id";
+                var result = await connection.ExecuteAsync(sqlCommand, new
+                {
+                    category.Name,
+                    category.Id
+                });
+                return Convert.ToBoolean(result);
+            }
         }
     }
 }
