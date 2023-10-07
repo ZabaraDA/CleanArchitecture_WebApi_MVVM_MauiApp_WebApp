@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using MyMauiApp.ViewModels;
+using MyMauiApp.Views;
 
 namespace MyMauiApp
 {
@@ -15,8 +17,12 @@ namespace MyMauiApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddTransient<AppShell>();
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<LoginViewModel>();
+
 #if DEBUG
-		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
