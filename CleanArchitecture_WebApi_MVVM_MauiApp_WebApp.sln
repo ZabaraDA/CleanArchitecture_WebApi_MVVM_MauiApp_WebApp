@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{D4E7EE82-BCBD-48CC-8B5A-52BEA0ED3AC6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Backend\Core\Application\Services\Services.csproj", "{FC4BE6AB-3DB9-4AD4-818F-F3CCE2F32FD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interfaces", "Backend\Core\Application\Services\Interfaces.csproj", "{FC4BE6AB-3DB9-4AD4-818F-F3CCE2F32FD9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Backend\Core\Domain\Models\Models.csproj", "{4F5A2CEB-7E85-4BE1-AB43-B39069EA2CA8}"
 EndProject

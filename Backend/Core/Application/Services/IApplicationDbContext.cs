@@ -1,5 +1,5 @@
 ﻿
-namespace Backend.Core.Application.Services
+namespace Backend.Core.Application.Interfaces
 {
     public interface IApplicationDbContext
     {
