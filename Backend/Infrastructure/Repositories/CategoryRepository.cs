@@ -1,7 +1,7 @@
 ﻿using Npgsql;
 using System.Data;
 using Dapper;
-using Backend.Core.Application.Services;
+using Backend.Core.Application.Interfaces;
 using Backend.Core.Domain.Models;
 
 namespace Backend.Infrastructure.Repositories

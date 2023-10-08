@@ -1,4 +1,4 @@
-﻿namespace Backend.Core.Application.Services
+﻿namespace Backend.Core.Application.Interfaces
 {
     public interface IRepository<T> where T : class
     {

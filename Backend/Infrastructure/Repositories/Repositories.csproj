@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Application\Services\Services.csproj" />
+    <ProjectReference Include="..\..\Core\Application\Services\Interfaces.csproj" />
     <ProjectReference Include="..\..\Core\Domain\Models\Models.csproj" />
   </ItemGroup>
 

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Application\Services\Services.csproj" />
+    <ProjectReference Include="..\..\Core\Application\Services\Interfaces.csproj" />
     <ProjectReference Include="..\..\Core\Domain\Models\Models.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Repositories\Repositories.csproj" />
     <ProjectReference Include="..\Dtos\DataTransferObjects.csproj" />

@@ -1,5 +1,5 @@
 
-using Backend.Core.Application.Services;
+using Backend.Core.Application.Interfaces;
 using Backend.Infrastructure.Repositories;
 
 namespace ServerWebApplication
