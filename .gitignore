@@ -361,3 +361,14 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Build
+/Commands
+/Dtos
+/Interfaces
+/Models
+/MyMauiApp
+/NavigationService
+/Repositories
+/ServerWebApplication
+/Services
