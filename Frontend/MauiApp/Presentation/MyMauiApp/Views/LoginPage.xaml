@@ -5,12 +5,20 @@
              xmlns:viewmodels="clr-namespace:MyMauiApp.ViewModels"
              x:Class="MyMauiApp.Views.LoginPage"
              Title="LoginPage">
-             <!--x:DataType="{x:Type viewmodels:LoginViewModel}"-->
-    <VerticalStackLayout>
-        <Label Text="Логин"/>
-        <Entry Text="{Binding Login}"/>
-        <Label Text="Пароль"/>
-        <Entry IsPassword="True" Text="{Binding Password}"/>
-        <Button Command="{Binding AddCommand}"/>
-    </VerticalStackLayout>
+    <!--x:DataType="{x:Type viewmodels:LoginViewModel}"-->
+    <Grid>
+
+        <Border Background="LightGray" Margin="20"/>
+        <VerticalStackLayout HorizontalOptions="Center"
+                     VerticalOptions="Center">
+            <Label Text="Логин"/>
+            <Entry Text="{Binding Login}"/>
+            <Label Text="Пароль"/>
+            <Entry IsPassword="True" 
+           Text="{Binding Password}"/>
+            <Button Command="{Binding OpenCommand}"
+            Text="Войти"/>
+        </VerticalStackLayout>
+    </Grid>
+
 </ContentPage>

@@ -16,15 +16,11 @@ namespace MyMauiApp.ViewModels
         public LoginViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
-            AddCommand = new Command(() =>
-            {
-                _navigationService.Route = "MenuPage";
-            });
         }
         #endregion
 
-        #region Login Properties        
-        private string _login = "erre";
+        #region Login Properties
+        private string _login;
         public string Login
         {
             get
@@ -53,7 +49,16 @@ namespace MyMauiApp.ViewModels
         #endregion
 
         #region Login Route Commands
-        public ICommand AddCommand { get; set; }
+        public ICommand OpenCommand
+        {
+            get
+            {
+                return new Command (() =>
+                {
+                    _navigationService.Route = "//General";
+                });
+            }
+        }
 
 
         #endregion

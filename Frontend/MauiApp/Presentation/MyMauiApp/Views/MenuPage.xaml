@@ -1,10 +1,76 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:data="clr-namespace:Frontend.MauiApp.Core.Domain.Models;assembly=Models"
+             xmlns:behavior="clr-namespace:MyMauiApp.Behaviours"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MyMauiApp.Views.MenuPage"
              Title="MenuPage">
-    <VerticalStackLayout>
-        <ListView/>
-        <Button Command="{Binding AddCommand}"/>
-    </VerticalStackLayout>
+    <ContentPage.Resources>
+        <toolkit:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+    </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+                EventName="Loaded"
+                Command="{Binding ProductGetCommand}"/>
+    </ContentPage.Behaviors>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Text="{Binding Title}"
+               HorizontalOptions="CenterAndExpand">
+            <Label.Behaviors>
+                <behavior:FadingLabelAnimationBehavior DesiredDuration="100"/>
+            </Label.Behaviors>
+        </Label>
+        <!--<ActivityIndicator IsRunning="{Binding AddCommand}"/>-->
+        <CollectionView ItemsSource="{Binding ProductList}"
+                        Grid.Row="0">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="2" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="data:Product">
+                    <Grid Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.RowSpan="2"
+                               Source="{Binding Path=Photo,Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                       Aspect="AspectFill"
+                       HeightRequest="60"
+                       WidthRequest="60" />
+                        <Label Grid.Column="1"
+                       Text="{Binding Name}"
+                       FontAttributes="Bold" />
+                        <Label Grid.Row="1"
+                       Grid.Column="1"
+                       Text="{Binding Category.Name}"
+                       FontAttributes="Italic"
+                       VerticalOptions="End" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <HorizontalStackLayout Grid.Row="1"
+                               Margin="20"
+                               HorizontalOptions="CenterAndExpand"
+                               VerticalOptions="End">
+            <Button Command="{Binding ProductGetCommand}"
+                    Text="Загрузить товары"/>
+            <Button Command="{Binding LoginRouteCommand}"
+                    Text="Авторизация"/>
+        </HorizontalStackLayout>
+
+
+    </Grid>
 </ContentPage>

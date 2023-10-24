@@ -4,11 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Frontend.MauiApp.Core.Application.Interfaces</RootNamespace>
+    <RootNamespace>Frontend.MauiApp.Infrastructure.Utils</RootNamespace>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Domain\Models\Models.csproj" />
-  </ItemGroup>
 
 </Project>

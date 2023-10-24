@@ -1,5 +1,4 @@
-﻿using MyMauiApp.ViewModels;
-using MyMauiApp.Views;
+﻿using MyMauiApp.Views;
 
 namespace MyMauiApp
 {
