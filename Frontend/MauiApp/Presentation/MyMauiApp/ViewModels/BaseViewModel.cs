@@ -10,6 +10,21 @@ namespace MyMauiApp.ViewModels
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
+        private string _title;
+
+        public string Title
+        {
+            get
+            {
+                return _title;
+            }
+            set 
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region OnPropertyChanged
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {

@@ -4,7 +4,7 @@ namespace Frontend.MauiApp.Infrastructure.NavigationServices
 {
     public class NavigationService : INavigationService
     {
-        private string _route = "LoginPage";
+        private string _route = "//General/Menu";
         public string Route 
         {
             get 

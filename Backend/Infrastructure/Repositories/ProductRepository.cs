@@ -18,9 +18,9 @@ namespace Backend.Infrastructure.Repositories
         {
             using (IDbConnection connection = new NpgsqlConnection(_connectionString))
             {
-                const string sqlCommand = "INSERT INTO product (name,categoryid) VALUES (@name, @categoryid)";
+                const string sqlCommand = "INSERT INTO product (name,photo,categoryid) VALUES (@name,@photo,@categoryid)";
 
-                var result = await connection.ExecuteAsync(sqlCommand, new { product.Name, product.CategoryId });
+                var result = await connection.ExecuteAsync(sqlCommand, new { product.Name, product.Photo,product.CategoryId });
 
                 return Convert.ToBoolean(result);
             }

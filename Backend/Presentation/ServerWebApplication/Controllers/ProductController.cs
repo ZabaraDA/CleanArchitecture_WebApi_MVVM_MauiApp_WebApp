@@ -27,14 +27,22 @@ namespace Backend.Presentation.ServerWebApplication.Controllers
         #region Public Context Methods
 
         [HttpPost]
-        public async Task<ApiResponse<Product?>> Add([FromBody] ProductPostDto productPostDto)
+        public async Task<ApiResponse<Product?>> Add(string name, IFormFile photo, int categoryId)
         {
             var apiResponse = new ApiResponse<Product?>();
             try
             {
+                byte[] photoBytes;
+                using (var stream = new MemoryStream())
+                {
+                    await photo.CopyToAsync(stream);
+                    photoBytes = stream.ToArray();
+                }
                 var success = await _context.Products.AddAsync(new Product
                 {
-                    Name = productPostDto.Name
+                    Name = name,
+                    Photo = photoBytes,
+                    CategoryId = categoryId,
                 });
                 apiResponse.Success = success;
                 if (success)

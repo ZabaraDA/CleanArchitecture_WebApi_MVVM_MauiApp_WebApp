@@ -5,11 +5,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:MyMauiApp.Views"
     xmlns:viewmodels="clr-namespace:MyMauiApp.ViewModels"
-    Shell.FlyoutBehavior="Disabled"
-    Title="{Binding Route}">
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate views:LoginPage}"
-        Route="LoginPage">
-    </ShellContent>
+    Title="{Binding Route}"
+    FlyoutBackground="LightGray"
+    Shell.FlyoutBehavior="Disabled">
+    <FlyoutItem Route="Access" 
+                FlyoutDisplayOptions="AsMultipleItems"
+                FlyoutItemIsVisible="False">
+        <ShellContent
+            Title="Авторизация"
+            ContentTemplate="{DataTemplate views:LoginPage}"
+            Route="Login">
+        </ShellContent>
+        <ShellContent
+            Title="Регистрация"
+            ContentTemplate="{DataTemplate views:RegistrationPage}"
+            Route="Registration">
+        </ShellContent>
+    </FlyoutItem>
+    <FlyoutItem Route="General"
+                FlyoutDisplayOptions="AsMultipleItems">
+        <Tab>
+            <ShellContent
+            Route="Menu"
+            Title="Menu"
+            ContentTemplate="{DataTemplate views:MenuPage}">
+            </ShellContent>
+            <ShellContent
+            Route="Settings"
+            Title="Settings"
+            ContentTemplate="{DataTemplate views:SettingsPage}">
+            </ShellContent>
+        </Tab>
+    </FlyoutItem>
 </Shell>
